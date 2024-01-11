@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Modal, Form, Input, Rate, Divider, Tag } from "antd";
+import { Button, Modal, Form, Input, Rate, Divider, Tag, message } from "antd";
 import { useJobContext } from "@/context/JobContext";
 import { Job } from "@/Utils/interfaces";
 import { v4 as uuidv4 } from "uuid";
@@ -23,6 +23,7 @@ const NewCandidateModal: React.FC<NewCandidateModalProps> = ({
   >([]);
   const [rateValues, setRateValues] = useState<{ [key: string]: number }>({});
   const { jobs, updateJob } = useJobContext();
+  const [messageApi, contextHolder] = message.useMessage();
 
   const calculatePontuation = (technologies: any[], rateValues: any) => {
     let totalPontuation = 0;
@@ -37,6 +38,13 @@ const NewCandidateModal: React.FC<NewCandidateModalProps> = ({
     });
 
     return totalPontuation;
+  };
+
+  const success = () => {
+    messageApi.open({
+      type: "success",
+      content: "Candidato salvo com sucesso!",
+    });
   };
 
   const onFinish = (values: any) => {
@@ -62,8 +70,8 @@ const NewCandidateModal: React.FC<NewCandidateModalProps> = ({
     );
 
     updateJob(updatedJobs);
-
-    onClose()
+    success();
+    onClose();
   };
 
   const job: Job | undefined = jobs.find((job) => job.id === jobId);
@@ -98,6 +106,7 @@ const NewCandidateModal: React.FC<NewCandidateModalProps> = ({
         }}
         footer={[]}
       >
+        {contextHolder}
         <div style={{ display: "flex", justifyContent: "center" }}>
           <h3> {job?.job} </h3>
           <Tag color="blue" style={{ marginLeft: "12px" }}>
