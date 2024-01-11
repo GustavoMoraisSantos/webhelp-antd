@@ -6,9 +6,9 @@ import { JobProvider } from "@/context/JobContext";
 
 const App = ({ Component, pageProps }: AppProps) => (
   <JobProvider>
-    <ConfigProvider>
-      <Component {...pageProps} />
-    </ConfigProvider>
+      <ConfigProvider>
+        <Component {...pageProps} />
+      </ConfigProvider>
   </JobProvider>
 );
 

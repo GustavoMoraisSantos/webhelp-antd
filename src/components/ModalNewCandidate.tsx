@@ -18,11 +18,11 @@ const NewCandidateModal: React.FC<NewCandidateModalProps> = ({
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const { TextArea } = Input;
-  const { jobs } = useJobContext();
   const [requirements, setRequirements] = useState<
     { name: string; weight: number }[]
   >([]);
   const [rateValues, setRateValues] = useState<{ [key: string]: number }>({});
+  const { jobs, updateJob } = useJobContext();
 
   const calculatePontuation = (technologies: any[], rateValues: any) => {
     let totalPontuation = 0;
@@ -31,7 +31,6 @@ const NewCandidateModal: React.FC<NewCandidateModalProps> = ({
       const technologyName = technology.name;
       const rating = rateValues[technologyName] || 0;
       const weight = technology.ratingRequired;
-
       const technologyPontuation = rating * weight;
 
       totalPontuation += technologyPontuation;
@@ -42,16 +41,29 @@ const NewCandidateModal: React.FC<NewCandidateModalProps> = ({
 
   const onFinish = (values: any) => {
     const pontuation = calculatePontuation(job?.technologies || [], rateValues);
-    const newPayload: any = {
-      id: uuidv4(),
-      candidateName: values.candidateName,
-      contact: values.contact,
-      linkedin: values.linkedin,
-      observations: values.observations,
-      pontuation: pontuation,
-    };
 
-    console.log("O PAYLOAD: ", newPayload);
+    const updatedJobs = jobs.map((j) =>
+      j.id === jobId
+        ? {
+            ...j,
+            candidates: [
+              ...(j.candidates || []),
+              {
+                id: uuidv4(),
+                candidateName: values.candidateName,
+                contact: values.contact,
+                linkedin: values.linkedin,
+                observations: values.observations,
+                pontuation: pontuation,
+              },
+            ],
+          }
+        : j
+    );
+
+    updateJob(updatedJobs);
+
+    onClose()
   };
 
   const job: Job | undefined = jobs.find((job) => job.id === jobId);
