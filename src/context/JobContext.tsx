@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface Job {
+  id: string,
   job: string;
   nivel: string;
   description: string;
@@ -11,6 +12,7 @@ interface Job {
 interface JobContextProps {
   jobs: Job[];
   addJob: (newJob: Job) => void;
+  deleteJob: (id: string) => void;
 }
 
 const JobContext = createContext<JobContextProps | undefined>(undefined);
@@ -26,8 +28,13 @@ export const JobProvider: React.FC<JobProviderProps> = ({ children }) => {
     setJobs([...jobs, newJob]);
   };
 
+  const deleteJob = (id: string) => {
+    setJobs(jobs.filter((job) => job.id !== id));
+  };
+
+
   return (
-    <JobContext.Provider value={{ jobs, addJob }}>
+    <JobContext.Provider value={{ jobs, addJob, deleteJob }}>
       {children}
     </JobContext.Provider>
   );

@@ -1,10 +1,12 @@
 import { useJobContext } from "@/context/JobContext";
 import { Button, Form, Input, Radio, Rate, message } from "antd";
 import {  useState } from "react";
+import { v4 as uuidv4 } from 'uuid'
 
 const { TextArea } = Input;
 
 interface Job {
+  id: string;
   job: string;
   nivel: string;
   description: string;
@@ -24,6 +26,7 @@ const FormNewVacancy = ({ onFinishForm }: { onFinishForm: () => void }) => {
     const formattedDate = `${createdAt.getDate().toString().padStart(2, '0')}/${(createdAt.getMonth() + 1).toString().padStart(2, '0')}/${createdAt.getFullYear()}`;
     
     const newPayload: Job = {
+      id: uuidv4(),
       job: values.vacation,
       nivel: values.nivel,
       description: values.description,

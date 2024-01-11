@@ -5,6 +5,7 @@ import {
   Drawer,
   Input,
   Layout,
+  Modal,
   Space,
   Table,
   Tag,
@@ -15,7 +16,6 @@ import Logo from "../../public/web-help-logo.png";
 import { ColumnsType } from "antd/es/table";
 import {
   DeleteOutlined,
-  EditOutlined,
   PlusCircleOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
@@ -31,59 +31,74 @@ interface DataType {
   createdAt: string;
 }
 
-const columns: ColumnsType<DataType> = [
-  {
-    title: "Nome da vaga",
-    dataIndex: "name",
-    key: "name",
-    render: (text) => <a>{text}</a>,
-  },
-  {
-    title: 'Nível',
-    dataIndex: 'levelTag',
-    key: 'levelTag',
-  },
-  {
-    title: "Data de abertura",
-    dataIndex: "createdAt",
-    key: "createdAt",
-  },
-  {
-    title: "Action",
-    key: "action",
-    width: "100px",
-    render: (_, record) => (
-      <Space size="middle">
-        <Tooltip title="Adicionar novo candidato">
-          <PlusCircleOutlined className={styles.actionIcon} />
-        </Tooltip>
-        <Tooltip title="Editar informações da vaga">
-          <EditOutlined className={styles.actionIcon} />
-        </Tooltip>
-        <Tooltip title="Excluir vaga">
-          <DeleteOutlined className={styles.actionIcon} />
-        </Tooltip>
-      </Space>
-    ),
-  },
-];
 
 export default function Home() {
   const [isVisibleDrawer, setIsVisibleDrawer] = useState(false);
-  const { jobs } = useJobContext();
+  const { jobs, deleteJob } = useJobContext();
+  const [modal, contextHolder] = Modal.useModal();
 
   const getTagColor = (nivel: string) => {
     return nivel === 'junior' ? 'green' : nivel === 'pleno' ? 'blue' : 'red';
   };
 
-  const jobsData = jobs.map((job, index) => ({
-    key: index.toString(),  
+  const jobsData = jobs.map((job) => ({
+    key: job.id,  
     name: `${job.job}`,  
     createdAt: job.createdAt,
     levelTag: <Tag color={getTagColor(job.nivel)}>{job.nivel}</Tag>,  // Adicione esta linha
   }));
 
-  console.log("aqui ta o jobs", jobs)
+  const confirm = (record: any) => {
+    modal.confirm({
+      title: 'Confirmação',
+      content: `Deseja realmente excluir a vaga ${record.name}?`,
+      okText: 'Excluir',
+      cancelText: 'Cancelar',
+      onOk: ()=>  deleteJob(record.key)
+    });
+  };
+
+  const columns: ColumnsType<DataType> = [
+    {
+      title: "Nome da vaga",
+      dataIndex: "name",
+      key: "name",
+      render: (text) => <a>{text}</a>,
+    },
+    {
+      title: 'Nível',
+      dataIndex: 'levelTag',
+      key: 'levelTag',
+    },
+    {
+      title: "Data de abertura",
+      dataIndex: "createdAt",
+      key: "createdAt",
+    },
+    {
+      title: "Ações",
+      key: "action",
+      width: "100px",
+      render: (_, record) => (
+        <Space size="middle">
+          <Tooltip title="Adicionar novo candidato">
+            <PlusCircleOutlined className={styles.actionIcon} />
+          </Tooltip>
+          {/* <Tooltip title="Editar informações da vaga">
+            <EditOutlined className={styles.actionIcon} />
+          </Tooltip> */}
+          <Tooltip title="Excluir vaga">
+            <DeleteOutlined
+              onClick={() => confirm(record)}
+              className={styles.actionIcon}
+            />
+          </Tooltip>
+        </Space>
+      ),
+    }
+  ];
+  
+
   return (
     <>
       <Head>
@@ -143,6 +158,7 @@ export default function Home() {
             </div>
 
             <Table columns={columns} dataSource={jobsData} />
+            {contextHolder}
           </div>
 
           <Drawer
