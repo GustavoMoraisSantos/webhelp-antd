@@ -16,12 +16,13 @@ import Logo from "../../public/web-help-logo.png";
 import { ColumnsType } from "antd/es/table";
 import {
   DeleteOutlined,
+  EyeOutlined,
   PlusCircleOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
 import FormNewVacancy from "@/components/FormNewVacancy";
 import { useJobContext } from "@/context/JobContext";
-
+import NewCandidateModal from "@/components/ModalNewCandidate";
 
 const { Header, Content, Footer } = Layout;
 const { Search } = Input;
@@ -31,33 +32,39 @@ interface DataType {
   createdAt: string;
 }
 
-
 export default function Home() {
   const [isVisibleDrawer, setIsVisibleDrawer] = useState(false);
+  const [visibleModalCandidate, setVisibleModalCandidate] =
+    useState<boolean>(false);
+  const [selectedJob, setSelectedJob] = useState<any>({});
   const { jobs, deleteJob } = useJobContext();
   const [modal, contextHolder] = Modal.useModal();
 
   const getTagColor = (nivel: string) => {
-    return nivel === 'junior' ? 'green' : nivel === 'pleno' ? 'blue' : 'red';
+    return nivel === "junior" ? "green" : nivel === "pleno" ? "blue" : "red";
   };
 
   const jobsData = jobs.map((job) => ({
-    key: job.id,  
-    name: `${job.job}`,  
+    key: job.id,
+    name: `${job.job}`,
     createdAt: job.createdAt,
-    levelTag: <Tag color={getTagColor(job.nivel)}>{job.nivel}</Tag>,  // Adicione esta linha
+    levelTag: <Tag color={getTagColor(job.nivel)}>{job.nivel}</Tag>, // Adicione esta linha
   }));
 
   const confirm = (record: any) => {
     modal.confirm({
-      title: 'Confirmação',
+      title: "Confirmação",
       content: `Deseja realmente excluir a vaga ${record.name}?`,
-      okText: 'Excluir',
-      cancelText: 'Cancelar',
-      onOk: ()=>  deleteJob(record.key)
+      okText: "Excluir",
+      cancelText: "Cancelar",
+      onOk: () => deleteJob(record.key),
     });
   };
 
+  const handleAddCandidate = (record: any) => {
+    setVisibleModalCandidate(true);
+    setSelectedJob(record);
+  };
   const columns: ColumnsType<DataType> = [
     {
       title: "Nome da vaga",
@@ -66,9 +73,9 @@ export default function Home() {
       render: (text) => <a>{text}</a>,
     },
     {
-      title: 'Nível',
-      dataIndex: 'levelTag',
-      key: 'levelTag',
+      title: "Nível",
+      dataIndex: "levelTag",
+      key: "levelTag",
     },
     {
       title: "Data de abertura",
@@ -82,11 +89,14 @@ export default function Home() {
       render: (_, record) => (
         <Space size="middle">
           <Tooltip title="Adicionar novo candidato">
-            <PlusCircleOutlined className={styles.actionIcon} />
+            <PlusCircleOutlined
+              onClick={() => handleAddCandidate(record)}
+              className={styles.actionIcon}
+            />
           </Tooltip>
-          {/* <Tooltip title="Editar informações da vaga">
-            <EditOutlined className={styles.actionIcon} />
-          </Tooltip> */}
+          <Tooltip title="Visualizar candidatos da vaga">
+            <EyeOutlined className={styles.actionIcon} />
+          </Tooltip>
           <Tooltip title="Excluir vaga">
             <DeleteOutlined
               onClick={() => confirm(record)}
@@ -95,9 +105,8 @@ export default function Home() {
           </Tooltip>
         </Space>
       ),
-    }
+    },
   ];
-  
 
   return (
     <>
@@ -160,7 +169,6 @@ export default function Home() {
             <Table columns={columns} dataSource={jobsData} />
             {contextHolder}
           </div>
-
           <Drawer
             title="Cadastro de vaga"
             placement="right"
@@ -170,6 +178,12 @@ export default function Home() {
           >
             <FormNewVacancy onFinishForm={() => setIsVisibleDrawer(false)} />
           </Drawer>
+          {/* @ts-ignore */}
+          <NewCandidateModal
+            open={visibleModalCandidate}
+            jobId={selectedJob.key}
+            onClose={() => setVisibleModalCandidate(false)}
+          />
         </Content>
         <Footer style={{ textAlign: "center" }}>
           {new Date().getFullYear()} Created by Gustavo Morais

@@ -1,7 +1,7 @@
 import { useJobContext } from "@/context/JobContext";
 import { Button, Form, Input, Radio, Rate, message } from "antd";
-import {  useState } from "react";
-import { v4 as uuidv4 } from 'uuid'
+import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 const { TextArea } = Input;
 
@@ -19,39 +19,51 @@ const FormNewVacancy = ({ onFinishForm }: { onFinishForm: () => void }) => {
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
 
-  const [technologies, setTechnologies] = useState<{ name: string; ratingRequired: number }[]>([]);
+  const [technologies, setTechnologies] = useState<
+    { name: string; ratingRequired: number }[]
+  >([]);
 
-  const mountPayload = (values: any, technologies: { name: string; ratingRequired: number }[]) => {
+  const mountPayload = (
+    values: any,
+    technologies: { name: string; ratingRequired: number }[]
+  ) => {
     const createdAt = new Date();
-    const formattedDate = `${createdAt.getDate().toString().padStart(2, '0')}/${(createdAt.getMonth() + 1).toString().padStart(2, '0')}/${createdAt.getFullYear()}`;
-    
+    const formattedDate = `${createdAt
+      .getDate()
+      .toString()
+      .padStart(2, "0")}/${(createdAt.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}/${createdAt.getFullYear()}`;
+
     const newPayload: Job = {
       id: uuidv4(),
       job: values.vacation,
       nivel: values.nivel,
       description: values.description,
       technologies: technologies,
-      createdAt: formattedDate
+      createdAt: formattedDate,
     };
-  
+
     // Adicionando o novo emprego ao contexto
     addJob(newPayload);
-  
   };
 
   const handleAddTechnology = () => {
     const technology = form.getFieldValue("technologies");
 
     if (technology) {
-      setTechnologies([...technologies, { name: technology, ratingRequired: 0 }]);
+      setTechnologies([
+        ...technologies,
+        { name: technology, ratingRequired: 0 },
+      ]);
       form.resetFields(["technologies"]);
     }
   };
 
   const success = () => {
     messageApi.open({
-      type: 'success',
-      content: 'A vaga foi criada com sucesso!',
+      type: "success",
+      content: "A vaga foi criada com sucesso!",
     });
   };
 
@@ -59,7 +71,7 @@ const FormNewVacancy = ({ onFinishForm }: { onFinishForm: () => void }) => {
     success();
     form.resetFields();
     mountPayload(values, technologies);
-    setTechnologies([]);  
+    setTechnologies([]);
     onFinishForm();
   };
 
@@ -121,16 +133,22 @@ const FormNewVacancy = ({ onFinishForm }: { onFinishForm: () => void }) => {
             </p>
           </div>
           {technologies.map((technology, i) => (
-            <div key={i} style={{ display: "flex", justifyContent: "space-between" }}>
+            <div
+              key={i}
+              style={{ display: "flex", justifyContent: "space-between" }}
+            >
               {technology.name}
               <Form.Item label="">
-                <Rate onChange={(value) => handleRatingChange(technology.name, value)} />
+                <Rate
+                  onChange={(value) =>
+                    handleRatingChange(technology.name, value)
+                  }
+                />
               </Form.Item>
             </div>
           ))}
         </>
       )}
-
 
       <Form.Item
         name={"description"}
