@@ -70,6 +70,7 @@ const NewCandidateModal: React.FC<NewCandidateModalProps> = ({
     );
 
     updateJob(updatedJobs);
+    setRateValues({});
     success();
     onClose();
   };
@@ -100,7 +101,7 @@ const NewCandidateModal: React.FC<NewCandidateModalProps> = ({
         title={`Cadastro de candidato`}
         onCancel={() => {
           setRequirements([]);
-          setRateValues({}); // Reseta os valores do Rate
+          setRateValues({});
           form.resetFields();
           onClose();
         }}
