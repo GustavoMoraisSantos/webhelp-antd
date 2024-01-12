@@ -18,8 +18,16 @@ O sistema oferece recursos de compatibilidade entre candidatos e vagas, levando 
 ## Como Executar Localmente
 
 1. Clone o repositório;
-2. Instale as dependências: npm install ou yarn;
+2. Instale as dependências: 
+``` npm install ou yarn ``` 
 3. Configure as variáveis de ambiente: Crie um arquivo .env.local na raiz do seu projeto e adicione as seguintes variáveis:
+``` 
     NEXT_PUBLIC_GOOGLE_CLIENT_ID=SeuGoogleClientId;
-    NEXT_PUBLIC_GOOGLE_CLIENT_SECRET=SeuGoogleClientSecret;
-4. npm run dev ou yarn start.
+    NEXT_PUBLIC_GOOGLE_CLIENT_SECRET=SeuGoogleClientSecret; 
+```
+ 
+4. Execute o aplicativo: ```npm run dev ou yarn start.``` ;
+5. Abra o navegador e acesse: http://localhost:3000.
+
+## Contribuição
+Sinta-se à vontade para contribuir com melhorias, correções de bugs ou novos recursos. Abra uma issue ou envie um pull request.
