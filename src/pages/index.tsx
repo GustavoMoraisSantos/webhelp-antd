@@ -23,6 +23,7 @@ import { useState } from "react";
 import FormNewVacancy from "@/components/FormNewVacancy";
 import { useJobContext } from "@/context/JobContext";
 import NewCandidateModal from "@/components/ModalNewCandidate";
+import ListCandidatesByJob from "@/components/ModalCandidateByJob";
 
 const { Header, Content, Footer } = Layout;
 const { Search } = Input;
@@ -36,6 +37,9 @@ export default function Home() {
   const [isVisibleDrawer, setIsVisibleDrawer] = useState(false);
   const [visibleModalCandidate, setVisibleModalCandidate] =
     useState<boolean>(false);
+    const [openCandidatesList, setOpenCandidatesList] =
+    useState<boolean>(false);
+    
   const [selectedJob, setSelectedJob] = useState<any>({});
   const { jobs, deleteJob } = useJobContext();
   const [modal, contextHolder] = Modal.useModal();
@@ -65,6 +69,11 @@ export default function Home() {
     setVisibleModalCandidate(true);
     setSelectedJob(record);
   };
+  const handleListCandidates = (record: any) => {
+    setOpenCandidatesList(true);
+    setSelectedJob(record);
+  };
+  
   const columns: ColumnsType<DataType> = [
     {
       title: "Nome da vaga",
@@ -95,7 +104,9 @@ export default function Home() {
             />
           </Tooltip>
           <Tooltip title="Visualizar candidatos da vaga">
-            <EyeOutlined className={styles.actionIcon} />
+            <EyeOutlined 
+            onClick={() => handleListCandidates(record)}
+            className={styles.actionIcon} />
           </Tooltip>
           <Tooltip title="Excluir vaga">
             <DeleteOutlined
@@ -183,6 +194,12 @@ export default function Home() {
             open={visibleModalCandidate}
             jobId={selectedJob.key}
             onClose={() => setVisibleModalCandidate(false)}
+          />
+
+          <ListCandidatesByJob
+            open={openCandidatesList}
+            jobId={selectedJob.key}
+            onClose={() => setOpenCandidatesList(false)}
           />
         </Content>
         <Footer style={{ textAlign: "center" }}>

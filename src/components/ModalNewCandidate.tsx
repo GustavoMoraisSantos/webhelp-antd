@@ -3,6 +3,7 @@ import { Button, Modal, Form, Input, Rate, Divider, Tag, message } from "antd";
 import { useJobContext } from "@/context/JobContext";
 import { Job } from "@/Utils/interfaces";
 import { v4 as uuidv4 } from "uuid";
+import InputMask from "react-input-mask";
 
 interface NewCandidateModalProps {
   open: boolean;
@@ -139,7 +140,10 @@ const NewCandidateModal: React.FC<NewCandidateModalProps> = ({
               },
             ]}
           >
-            <Input />
+            <InputMask mask="(99) 99999-9999" maskChar="_">
+              {/* @ts-ignore */}
+              {(inputProps: any) => <Input {...inputProps} />}
+            </InputMask>
           </Form.Item>
 
           <Form.Item label="LinkedIn" name="linkedin">
