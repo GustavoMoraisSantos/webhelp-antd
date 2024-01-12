@@ -19,6 +19,10 @@
   justify-content: center;
 }
 
+.loginButton{
+  margin-left: 10%;
+} 
+
 .logoImage {
   width: 86px;
   height: auto;

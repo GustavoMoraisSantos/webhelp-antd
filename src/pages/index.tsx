@@ -24,6 +24,8 @@ import FormNewVacancy from "@/components/FormNewVacancy";
 import { useJobContext } from "@/context/JobContext";
 import NewCandidateModal from "@/components/ModalNewCandidate";
 import ListCandidatesByJob from "@/components/ModalCandidateByJob";
+import { getSession, signOut, useSession } from "next-auth/react";
+import { GetServerSideProps } from "next";
 
 const { Header, Content, Footer } = Layout;
 const { Search } = Input;
@@ -33,7 +35,27 @@ interface DataType {
   createdAt: string;
 }
 
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const session = await getSession({ req });
+
+  if (!session?.user) {
+    // Se nao tem user a gente redireciona para /
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+};
+
 export default function Home() {
+  const { data: session, status } = useSession();
+
   const { jobs, deleteJob } = useJobContext();
   const [modal, contextHolder] = Modal.useModal();
   const [isVisibleDrawer, setIsVisibleDrawer] = useState(false);
@@ -136,8 +158,15 @@ export default function Home() {
         <Header className={styles.headerContainer}>
           <Image alt="logo web help" className={styles.logoImage} src={Logo} />
           <p className={styles.headerText}>
-            Sistema de Seleção - Gustavo Morais
+            Sistema de Seleção
           </p>
+          {status === "loading" ? (
+            <></>
+          ) : session && (
+            <Button type="primary" danger ghost className={styles.loginButton} onClick={() => signOut()}>
+              Sair
+            </Button>
+          ) }
         </Header>
         <Content className={styles.content}>
           <div
