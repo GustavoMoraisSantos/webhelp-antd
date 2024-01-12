@@ -34,15 +34,13 @@ interface DataType {
 }
 
 export default function Home() {
-  const [isVisibleDrawer, setIsVisibleDrawer] = useState(false);
-  const [visibleModalCandidate, setVisibleModalCandidate] =
-    useState<boolean>(false);
-    const [openCandidatesList, setOpenCandidatesList] =
-    useState<boolean>(false);
-    
-  const [selectedJob, setSelectedJob] = useState<any>({});
   const { jobs, deleteJob } = useJobContext();
   const [modal, contextHolder] = Modal.useModal();
+  const [isVisibleDrawer, setIsVisibleDrawer] = useState(false);
+  const [visibleModalCandidate, setVisibleModalCandidate] = useState<boolean>(false);
+  const [openCandidatesList, setOpenCandidatesList] = useState<boolean>(false);
+  const [selectedJob, setSelectedJob] = useState<any>({});
+  const [searchTerm, setSearchTerm] = useState("");
 
   const getTagColor = (nivel: string) => {
     return nivel === "junior" ? "green" : nivel === "pleno" ? "blue" : "red";
@@ -52,7 +50,7 @@ export default function Home() {
     key: job.id,
     name: `${job.job}`,
     createdAt: job.createdAt,
-    levelTag: <Tag color={getTagColor(job.nivel)}>{job.nivel}</Tag>, // Adicione esta linha
+    levelTag: <Tag color={getTagColor(job.nivel)}>{job.nivel}</Tag>,
   }));
 
   const confirm = (record: any) => {
@@ -73,13 +71,18 @@ export default function Home() {
     setOpenCandidatesList(true);
     setSelectedJob(record);
   };
-  
+  const filteredData = jobsData.filter((job) =>
+    job.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   const columns: ColumnsType<DataType> = [
     {
       title: "Nome da vaga",
       dataIndex: "name",
       key: "name",
-      render: (text) => <a>{text}</a>,
+      render: (text, record) => (
+        <a onClick={() => handleListCandidates(record)}>{text}</a>
+      ),
     },
     {
       title: "Nível",
@@ -104,9 +107,10 @@ export default function Home() {
             />
           </Tooltip>
           <Tooltip title="Visualizar candidatos da vaga">
-            <EyeOutlined 
-            onClick={() => handleListCandidates(record)}
-            className={styles.actionIcon} />
+            <EyeOutlined
+              onClick={() => handleListCandidates(record)}
+              className={styles.actionIcon}
+            />
           </Tooltip>
           <Tooltip title="Excluir vaga">
             <DeleteOutlined
@@ -171,13 +175,15 @@ export default function Home() {
               <Search
                 placeholder="Procure pelo nome da vaga"
                 style={{ width: "300px" }}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                allowClear
               />
               <Button type="primary" onClick={() => setIsVisibleDrawer(true)}>
                 Cadastrar nova vaga
               </Button>
             </div>
 
-            <Table columns={columns} dataSource={jobsData} />
+            <Table columns={columns} dataSource={filteredData} />
             {contextHolder}
           </div>
           <Drawer
