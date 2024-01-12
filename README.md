@@ -21,7 +21,7 @@ O sistema oferece recursos de compatibilidade entre candidatos e vagas, levando 
 2. Instale as dependências: 
 ``` npm install ou yarn ``` 
 3. Configure as variáveis de ambiente: Crie um arquivo .env.local na raiz do seu projeto e adicione as seguintes variáveis:
-``` NEXT_PUBLIC_GOOGLE_CLIENT_ID=SeuGoogleClientId;
-    NEXT_PUBLIC_GOOGLE_CLIENT_SECRET=SeuGoogleClientSecret;
-``` 
+``` NEXT_PUBLIC_GOOGLE_CLIENT_ID=SeuGoogleClientId;```
+``` NEXT_PUBLIC_GOOGLE_CLIENT_SECRET=SeuGoogleClientSecret;```
+ 
 4. npm run dev ou yarn start.
