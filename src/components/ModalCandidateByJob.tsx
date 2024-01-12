@@ -1,3 +1,4 @@
+import React from "react";
 import { useJobContext } from "@/context/JobContext";
 import { Divider, Empty, Modal, Progress } from "antd";
 
@@ -28,6 +29,10 @@ const ListCandidatesByJob: React.FC<ListCandidatesByJobProps> = ({
     0
   );
 
+  const sortedCandidates = job?.candidates?.sort(
+    (a, b) => (b.pontuation as number) - (a.pontuation as number)
+  );
+
   return (
     <Modal open={open} onCancel={() => onClose()} footer={[]} width={1000}>
       <div style={{ display: "flex", justifyContent: "center" }}>
@@ -36,20 +41,20 @@ const ListCandidatesByJob: React.FC<ListCandidatesByJobProps> = ({
         </h3>
       </div>
       <Divider />
-      {job?.candidates ? (
-        job?.candidates?.map((candidate) => (
+      {sortedCandidates && sortedCandidates.length > 0 ? (
+        sortedCandidates.map((candidate) => (
           <div key={candidate.id} style={{ display: "flex", width: "100%" }}>
             <div
               style={{
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
-                width: "70%",
+                width: "100%",
               }}
             >
-              {candidate?.candidateName} - Contato: {candidate.contact} -  pontuação: {candidate.pontuation}
+              {candidate?.candidateName} - Contato: {candidate.contact} -
+              pontuação: {candidate.pontuation}
             </div>
-
             <Progress
               percent={
                 candidate.pontuation
