@@ -37,7 +37,8 @@ export default function Home() {
   const { jobs, deleteJob } = useJobContext();
   const [modal, contextHolder] = Modal.useModal();
   const [isVisibleDrawer, setIsVisibleDrawer] = useState(false);
-  const [visibleModalCandidate, setVisibleModalCandidate] = useState<boolean>(false);
+  const [visibleModalCandidate, setVisibleModalCandidate] =
+    useState<boolean>(false);
   const [openCandidatesList, setOpenCandidatesList] = useState<boolean>(false);
   const [selectedJob, setSelectedJob] = useState<any>({});
   const [searchTerm, setSearchTerm] = useState("");
@@ -132,25 +133,9 @@ export default function Home() {
         <link rel="icon" href="/web-help-logo.png" />
       </Head>
       <Layout>
-        <Header
-          style={{
-            position: "sticky",
-            top: 0,
-            zIndex: 1,
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Image alt="logo web help" src={Logo} width={86} height={undefined} />
-          <p
-            style={{
-              color: "whitesmoke",
-              fontSize: "20px",
-              marginLeft: "24px",
-            }}
-          >
+        <Header className={styles.headerContainer}>
+          <Image alt="logo web help" className={styles.logoImage} src={Logo} />
+          <p className={styles.headerText}>
             Sistema de Seleção - Gustavo Morais
           </p>
         </Header>
