@@ -155,6 +155,8 @@ export default function Home() {
       label: <a onClick={() => signOut()} style={{display:'flex', justifyContent:'space-evenly'}}>Desconectar <LogoutOutlined /></a>,
     },
   ];
+  const fullName = session?.user?.name; 
+  const firstName = fullName ? fullName.split(' ')[0] : '';
 
   return (
     <>
@@ -191,8 +193,8 @@ export default function Home() {
                     height={50}
                     src={session.user?.image as string | StaticImport}
                   ></Image>
-                  <p style={{ color: "#fff", marginLeft: "10px" }}>
-                    Olá, {session.user?.name}
+                  <p style={{ color: "#fff", marginLeft: "10px", whiteSpace: "nowrap" }}>
+                    Olá, {firstName}
                   </p>
                 </div>
               </Dropdown>
