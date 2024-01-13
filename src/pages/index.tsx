@@ -18,6 +18,7 @@ import { ColumnsType } from "antd/es/table";
 import {
   DeleteOutlined,
   EyeOutlined,
+  LogoutOutlined,
   PlusCircleOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
@@ -151,7 +152,7 @@ export default function Home() {
   const items: MenuProps["items"] = [
     {
       key: "1",
-      label: <a onClick={() => signOut()}>Desconectar</a>,
+      label: <a onClick={() => signOut()} style={{display:'flex', justifyContent:'space-evenly'}}>Desconectar <LogoutOutlined /></a>,
     },
   ];
 
