@@ -3,6 +3,7 @@ import styles from "@/styles/Home.module.css";
 import {
   Button,
   Drawer,
+  Dropdown,
   Input,
   Layout,
   Modal,
@@ -26,6 +27,8 @@ import NewCandidateModal from "@/components/ModalNewCandidate";
 import ListCandidatesByJob from "@/components/ModalCandidateByJob";
 import { getSession, signOut, useSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
+import { MenuProps } from "antd/lib";
 
 const { Header, Content, Footer } = Layout;
 const { Search } = Input;
@@ -145,6 +148,12 @@ export default function Home() {
       ),
     },
   ];
+  const items: MenuProps["items"] = [
+    {
+      key: "1",
+      label: <a onClick={() => signOut()}>Desconectar</a>,
+    },
+  ];
 
   return (
     <>
@@ -155,18 +164,39 @@ export default function Home() {
         <link rel="icon" href="/web-help-logo.png" />
       </Head>
       <Layout>
-        <Header className={styles.headerContainer}>
-          <Image alt="logo web help" className={styles.logoImage} src={Logo} />
-          <p className={styles.headerText}>
-            Sistema de Seleção
-          </p>
+        <Header className={styles.headerContainer} style={{display:'flex', justifyContent:'space-between'}}>
+          <div style={{display:'flex', alignItems:'center'}}>
+            <Image
+              alt="logo web help"
+              className={styles.logoImage}
+              src={Logo}
+            />
+            <p className={styles.headerText}>Sistema de Seleção</p>
+          </div>
           {status === "loading" ? (
             <></>
-          ) : session && (
-            <Button type="primary" danger ghost className={styles.loginButton} onClick={() => signOut()}>
-              Sair
-            </Button>
-          ) }
+          ) : (
+            session && (
+              <Dropdown trigger={["click"]} menu={{ items }}>
+                <div style={{display:'flex', alignItems:'center'}}>
+                  <Image
+                    alt="foto do usuário"
+                    style={{
+                      borderRadius: "50%",
+                      marginLeft: "10px",
+                      cursor: "pointer",
+                    }}
+                    width={50}
+                    height={50}
+                    src={session.user?.image as string | StaticImport}
+                  ></Image>
+                  <p style={{ color: "#fff", marginLeft: "10px" }}>
+                    Olá, {session.user?.name}
+                  </p>
+                </div>
+              </Dropdown>
+            )
+          )}
         </Header>
         <Content className={styles.content}>
           <div
